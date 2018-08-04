@@ -1,0 +1,41 @@
+version: '3.1'
+
+services:
+  postgrepsql:
+    image: postgres:10.4-alpine
+    restart: always
+    container_name: postgrepsql
+    environment:
+      POSTGRES_PASSWORD: admin1234
+      POSTGRES_USER: admin
+    ports:
+      - 5432:5432
+
+  sqladmin:
+    image: adminer
+    restart: always
+    container_name: sqladmin
+    depends_on:
+      - postgrepsql
+    ports:
+      - 8081:8080
+
+  couchdb:
+    image: couchdb:2.1.2
+    restart: always
+    container_name: couchdb
+    ports:
+      - 5984:5984
+    environment:
+      COUCHDB_USER: admin
+      COUCHDB_PASSWORD: admin1234
+
+
+  redis:
+    image: redis:4-alpine
+    container_name: redis
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: [redis-server, /usr/local/etc/redis/redis.conf]
+
+
